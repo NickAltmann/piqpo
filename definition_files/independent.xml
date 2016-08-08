@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feed>
+  <Parameters>
+      <Parameter name="url"/>
+  </Parameters>    
+  <Source>
+    <RSSSource url="%url%"/>
+  </Source>
+  <Transforms>
+    <XsltTransform source="text">
+        <Xslt>
+            <xsl:stylesheet version="1.0"
+            xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+                <xsl:output omit-xml-declaration="yes" indent="yes"/>
+                <xsl:template match="/">
+                    <xsl:element name='transform'>
+                        <xsl:element name='image'>
+                            <xsl:value-of select="//root/img/@src" />
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:template>
+            </xsl:stylesheet>
+        </Xslt>
+    </XsltTransform>
+    <ReplaceTransform source='transform.image' target='item_image' pattern='#ALTERNATES/w100#' replacement='BINARY/original' />      
+    <SetValueTransform tag='logo' value='http://www.independent.co.uk/independent.co.uk/images/independent_masthead.png' mandatory='true'/>        
+    <SetValueTransform tag='css' value='independent-1.0.css' />
+  </Transforms>
+</Feed>

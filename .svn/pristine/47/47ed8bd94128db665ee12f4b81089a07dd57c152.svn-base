@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feed>
+  <Parameters>
+      <Parameter name="url"/>
+  </Parameters>    
+  <Source>
+    <RSSSource url="%url%"/>
+  </Source>
+  <Transforms>
+    <CopyValueTransform source='item.media:content_A.3.url' target='item_image' mandatory='true' />
+    <SetValueTransform tag='logo' value='http://static.guim.co.uk/static/cc41d09a9b7ee867eb3de0373ae6b074055a11b6/common/images/logos/the-guardian/titlepiece.gif' mandatory='true'/>        
+    <SetValueTransform tag='css' value='guardian-1.0.css' />
+  </Transforms>
+</Feed>

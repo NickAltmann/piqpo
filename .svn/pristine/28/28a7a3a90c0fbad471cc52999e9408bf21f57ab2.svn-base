@@ -1,0 +1,55 @@
+html	{ height: 100%;	}
+
+body 	
+{ 
+	height: 100%; 
+	margin: 0px; 
+	border: 0px; 
+	background-color: #000;
+}
+
+iframe 	
+{ 
+	border: 0; 
+	margin: 0px; 
+	overflow: hidden; 
+	display: inline; 
+	height:100%; 
+	width:100%; 
+	position: absolute;
+	z-index: 0;
+}		
+
+.frameholder 
+{ 
+	position:relative; 
+	overflow: hidden; 
+	height:100%; 
+	width:100%; 
+	border:0px; 
+	margin:0px;
+}
+
+.boxcaption
+{  
+    z-index: 10;
+    font-family: Helvetica, sans-serif;
+    color: white;
+    float: left;  
+    position: absolute;  
+    background: #000;  
+    height: 30px;  
+    width: 100%;  
+    left: 0px;  
+    bottom: -30px;
+    opacity: .8;  
+    /* For IE 5-7 */  
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);  
+    /* For IE 8 */  
+    -MS-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  
+}      
+
+.boxcaption a:link {color:white;text-decoration:none;text-transform:uppercase;}      
+.boxcaption a:visited {color:white;text-decoration:none;text-transform:uppercase;}  
+.boxcaption a:hover {color:yellow;text-decoration:none;text-transform:uppercase;}  
+.boxcaption a:active {color:greenyellow;text-decoration:none;text-transform:uppercase;}

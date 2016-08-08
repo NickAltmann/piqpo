@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <LINK href="/include/css/piqpo_basic-1.0.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="/3rd_party/jquery/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/js/piqpo_basic-1.0.js"></script>
+    <title>User Streams</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+</style>
+<script>
+
+var itemBeingMoved = null;
+
+function showUserDetails()
+{
+    var params = new Object;                
+    callAPI(    "getUserDetails", 
+                params, 
+                function( obj )
+                { 
+                    $("#details").html( obj.email ); 
+                    $("#logout").click( function(e) {
+                        e.preventDefault(); 
+                        logOut();
+                        });
+                },
+                function( mesg )
+                {
+                    $("message").html( mesg );
+                }
+            );                         
+}
+
+function logOut()
+{
+    var params = new Object;                
+    callAPI(    "logOut", 
+                params,
+                function() 
+                {
+                    window.location = "/basic_index.html";
+                },
+                function() 
+                {
+                    window.location = "/basic_index.html";
+                }                    
+            );  
+}
+
+function showAvailableStreams()
+{
+    var params = new Object;                
+    callAPI(    "userStreams", 
+                params, 
+                function( obj )
+                {
+                    $("#availableStreams").empty();
+                    $("#userStreams").empty();
+                    if ( obj.status == 1 )
+                    {
+                        var streams = obj.streams;
+                        for(var i = 0; i < streams.length; i++)
+                        {
+                            var stream = streams[i];
+                            if ( stream.assigned )
+                            {
+                                $("#userStreams").append( '<option value=' + stream.id + '>' + stream.name + "</option>" );                                
+                            }
+                            else
+                            {
+                                $("#availableStreams").append( '<option value=' + stream.id + '>' + stream.name + "</option>" );                                
+                            }
+                        }                            
+                    }
+                },
+                function( mesg )
+                {
+                    $("message").html( mesg );
+                } 
+            );                                 
+}
+
+function setUpButton( button, command, fromList, toList )
+{
+    button.click( function(e){
+            itemBeingMoved = fromList.find(":selected");
+            if( (typeof itemBeingMoved !== "undefined") && ((itemBeingMoved.text()).length > 0) )
+            {
+                var params = new Object;
+                params.stream = itemBeingMoved.attr('value');
+                callAPI(    command, 
+                            params, 
+                            function( obj )
+                            {                                 
+                                var id = itemBeingMoved.attr('value');
+                                var name = itemBeingMoved.text();
+                                toList.append( '<option value=' + id + '>' + name + "</option>" );                                
+                                fromList.find(itemBeingMoved).remove();
+                                itemBeingMoved = null;
+                            },
+                            function( mesg )
+                            {
+                                $("message").html( mesg );
+                            }
+                        );                         
+            }
+        } );    
+}
+
+function setPreview( )
+{
+    var selected = $('#availableStreams').find(":selected");
+    if ( (typeof selected === 'undefined') || (selected.text().length == 0) )
+    {
+        $("#preview").height(0);
+        $("#preview").removeAttr( 'src' );
+        $("#previewTitle").html("");
+    }
+    else
+    {
+        var id = selected.attr('value');
+        var title = "Previewing " + selected.text();
+        $("#preview").height(450);
+        $("#preview").attr( 'src', "/view_streams.html?stream_id=" + id );
+        $("#previewTitle").html(title);
+    }
+}
+
+function init()
+{
+    getUserDetails(
+            function( obj )
+            { 
+                $("#details").html( "Logged in as " + obj.email ); 
+                $("#logout").click( function(e) {
+                    e.preventDefault(); 
+                    logOut();
+                    });
+            });
+            
+    showAvailableStreams();
+    
+    setUpButton( $("#addButton"), "subscribeToStream", $('#availableStreams'), $("#userStreams") );
+    setUpButton( $("#removeButton"), "unsubscribeFromStream", $("#userStreams"), $('#availableStreams') );
+    
+    $('#availableStreams').click( setPreview );
+    setPreview();
+}
+
+$(init);
+	    
+</script>
+</head>   
+    
+<body>        
+    <div class="top">        
+        <div class=main>
+            <div class=content >
+                <div style="float: left; text-align: left;">
+                    <span id="details" />
+                </div>
+                <div style="float: right; text-align: right;">
+                    <a href="/basic_user_home.html">User home</a> |  
+                    <a id="logout" href="javascript:void(0);">Log out</a> 
+                </div>
+            </div>
+            <div class=content>
+                <img src='/include/images/piqpo_200x75.gif' />
+            </div>
+            <div class=content>
+                <hr />
+                <p id="message" />
+                <div style="width: 50%; float: left; text-align: center;">
+                    Available streams<p/>
+                    <select id="availableStreams" size="10" style="width: 60%;">
+                    </select>
+                    <p/>
+                    <button id="addButton" style="width: 40%;">>> Add >></button>
+                </div>
+                <div style="width: 50%; float: right; text-align: center;">
+                    Selected streams<p/>
+                    <select id="userStreams" size="10" style="width: 60%;">
+                    </select>
+                    <p/>
+                    <button id="removeButton" style="width: 40%;"><< Remove <<</button>
+                </div>
+           </div>    
+           <div class=content style="text-align: center;">
+                <div id="previewTitle"></div>
+                <iframe frameborder='0' id="preview" frameborder="0" height="450" width="600"></iframe>
+                <hr />
+                <a href="/basic_user_home.html">Return Home</a>
+           </div>
+    </div>
+</body>
+</html>

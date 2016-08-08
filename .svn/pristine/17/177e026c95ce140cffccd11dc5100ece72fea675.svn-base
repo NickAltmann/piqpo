@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Feed>
+  <Parameters>
+      <Parameter name="url"/>
+  </Parameters>    
+  <Source>
+    <RSSSource url="%url%"/>
+  </Source>
+  <Transforms>
+          <ReplaceTransform source='guid' target='video' pattern='/.*:video:/' />
+  </Transforms>
+</Feed>

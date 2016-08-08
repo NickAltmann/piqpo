@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <LINK href="/include/css/piqpo_basic-1.0.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="/3rd_party/jquery/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="/include/js/piqpo_basic-1.0.js"></script>
+    <title>User Home</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style>
+</style>
+<script>
+
+function showUserDetails()
+{
+    var params = new Object;                
+    callAPI(    "getUserDetails", 
+                params, 
+                function( obj )
+                { 
+                    $("#details").html( obj.email ); 
+                    $("#logout").click( function(e) {
+                        e.preventDefault(); 
+                        logOut();
+                        });
+                },
+                function( mesg )
+                {
+                    $("message").html( mesg );
+                }
+            );                         
+}
+
+function logOut()
+{
+    var params = new Object;                
+    callAPI(    "logOut", 
+                params,
+                function() 
+                {
+                    window.location = "/basic_index.html";
+                },
+                function() 
+                {
+                    window.location = "/basic_index.html";
+                }                    
+            );  
+}
+
+function showAvailableStreams()
+{
+    var params = new Object;                
+    callAPI(    "userStreams", 
+                params, 
+                function( obj )
+                {
+                    if ( obj.status == 1 )
+                    {
+                        var streams = obj.streams;
+                        for(var i = 0; i < streams.length; i++)
+                        {
+                            var stream = streams[i];
+                            if ( stream.assigned )
+                            {
+                                $("#userStreams").append( stream.name + "<br/>" );                                
+                            }
+                            else
+                            {
+                                $("#availableStreams").append( stream.name + "<br/>" );                                
+                            }
+                        }                            
+                    }
+                },
+                function( mesg )
+                {
+                    $("message").html( mesg );
+                } 
+            );                                 
+}
+
+function init()
+{
+    getUserDetails(
+            function( obj )
+            { 
+                $("#details").html( "Logged in as " + obj.email ); 
+                $("#logout").click( function(e) {
+                    e.preventDefault(); 
+                    logOut();
+                    });
+            });
+    showAvailableStreams();
+}
+
+function popup() 
+{
+    var url = "/view_streams.html";
+	popupWindow = window.open(
+		url,'Piqpo','height=400,width=500,resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no')
+}
+
+$(init);
+	    
+</script>
+</head>   
+    
+<body>        
+    <div class="top">        
+        <div class=main>
+            <div class=content >
+                <div style="float: left; text-align: left;">
+                    <span id="details" />
+                </div>
+                <div style="float: right; text-align: right;">
+                    <a href="/basic_user_details.html">Change details</a> |  
+                    <a id="logout" href="javascript:void(0);">Log out</a> 
+                </div>
+            </div>
+            <div class=content>
+                <img src='/include/images/piqpo_200x75.gif' />
+            </div>
+            <div class=content>
+                <hr />
+                <div>
+                <iframe src="/view_streams.html" frameborder="0" height="450" width="600"></iframe>
+                </div>
+                <a href="/view_streams.html" target="_blank">View in new window</a> |
+                <a id="popup" href="javascript:popup();">View in pop-up</a> |
+                <a href="/basic_user_streams.html">Change subscriptions</a>
+            </div>    
+        </div>
+    </div>
+</body>
+</html>
